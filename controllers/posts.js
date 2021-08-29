@@ -67,14 +67,14 @@ export const getPost = async (req,res) => {
 
 export const timeline = async (req,res) => {
     try {
-        const currentUser = await User.findById(req.userId);
-        const userPosts = await Post.find({ userId: currentUser._id });
-        const friendPosts = await Promise.all(
-            currentUser.followings.map((friendId) => {
-                return Post.find({ userId: friendId });
-            })
-        );
-        return res.status(200).json(userPosts.concat(...friendPosts));
+        // const currentUser = await User.findById(req.userId);
+        const userPosts = await Post.find({ userId: req.userId }).sort( { createdAt: -1 } );
+        // const friendPosts = await Promise.all(
+        //     currentUser.followings.map((friendId) => {
+        //         return Post.find({ userId: friendId });
+        //     })
+        // );
+        return res.status(200).json(userPosts);  //.concat(...friendPosts)
     } catch (error) {
         return res.status(500).json(error);
     }
