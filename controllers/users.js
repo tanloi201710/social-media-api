@@ -5,8 +5,18 @@ export const updateUser = async (req,res) => {
     if(req.userId === req.params.id || req.body.isAdmin){
         if(req.body.password) {
             try {
-                const salt = await bcrypt.genSalt(10);
-                req.body.password = await bcrypt.hash(req.body.password, salt, null, function (err,hash) { console.log(err); });
+                const salt = await bcrypt.genSalt(10,function (err, salt) {
+                    if (err) {
+                        return next(err);
+                    }
+                });
+                req.body.password = await bcrypt.hash(req.body.password, salt, null, function (err,hash) { 
+                    if(err) {
+                        return next(err);
+                    }
+                    req.body.password = hash;
+                    next();
+                 });
             } catch (error) {
                 return res.status(500).json(error);
             }

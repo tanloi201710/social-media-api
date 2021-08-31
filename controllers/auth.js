@@ -14,8 +14,18 @@ export const register = async (req,res) => {
         if(existingUser) return res.status(400).json({ message: "User already exists!" })
         
         // generate new password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt, null, function (err, hash) { console.log(err) });
+        const salt = await bcrypt.genSalt(10,function (err, salt) {
+            if (err) {
+                return next(err);
+            }
+        });
+        const hashedPassword = await bcrypt.hash(password, salt, null, function (err,hash) { 
+            if(err) {
+                return next(err);
+            }
+            hashedPassword = hash;
+            next();
+         });
         
         // create new user
         const user = await User.create({ email, password: hashedPassword, name });
