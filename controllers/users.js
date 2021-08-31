@@ -1,5 +1,5 @@
 import User from '../models/User.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt-nodejs';
 
 export const updateUser = async (req,res) => {
     if(req.userId === req.params.id || req.body.isAdmin){
