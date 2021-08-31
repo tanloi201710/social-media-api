@@ -19,6 +19,7 @@ dotenv.config();
 const PORT = process.env.PORT;
 const DB_URL = process.env.MONGODB_CONNECT;
 
+// conect to DB
 mongoose.connect(DB_URL, 
     { useNewUrlParser : true, useUnifiedTopology: true }, 
     () => {
