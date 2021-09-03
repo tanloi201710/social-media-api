@@ -28,6 +28,7 @@ mongoose.connect(DB_URL,
 });
 
 app.use("/images", express.static(path.join(__dirname, "public/images")));
+
 console.log(__dirname);
 //middleware
 app.use(express.json({ limit: '50mb' }));
@@ -38,14 +39,14 @@ app.use(cors());
 //Upload images
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, "public/images");
+      cb(null, "./public/images");
     },
     filename: (req, file, cb) => {
       cb(null, req.body.name);
     },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 app.post("/api/upload", upload.single("file"), (req, res) => {
     try {
