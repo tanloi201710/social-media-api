@@ -1,8 +1,7 @@
 
-import { __dirname } from "../constants.js";
+
 import Post from "../models/Post.js";
 import User from "../models/User.js";
-import fs from 'fs';
 
 export const createPost = async (req,res) => {
     const  post = req.body;
@@ -34,11 +33,6 @@ export const deletePost = async (req,res) => {
     try {
         const post = await Post.findById(req.params.id);
         if(post.userId === req.userId){
-            if(post.img !== '') {
-                const path = __dirname;
-                const filePath = path + "/public/images/" + post.img;
-                fs.unlinkSync(filePath);
-            };
             await post.deleteOne();
             return res.status(200).json("The post has been deleted!")
         } else {
