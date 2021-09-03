@@ -28,7 +28,7 @@ mongoose.connect(DB_URL,
 });
 
 app.use("/images", express.static(path.join(__dirname, "public/images")));
-
+console.log(__dirname);
 //middleware
 app.use(express.json({ limit: '50mb' }));
 app.use(helmet());
