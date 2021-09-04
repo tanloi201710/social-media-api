@@ -12,7 +12,7 @@ export const register = async (req,res) => {
     try {
         const existingUser = await User.findOne({ email });
 
-        if(existingUser) return res.status(400).json({ message: "User already exists!" })
+        if(existingUser) return res.status(400).json({ message: "Email đã tồn tại!" });
         
         // generate new password
         const salt = await bcrypt.genSalt(10);
@@ -32,10 +32,10 @@ export const login = async (req,res) => {
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email });
-        !user && res.status(404).json("user not found!");
+        !user && res.status(404).json({ message: "Email không hợp lệ!"});
 
         const validPassword = await bcrypt.compare(password, user.password);
-        !validPassword && res.status(400).json("Wrong password!");
+        !validPassword && res.status(400).json({ message: "Mật khẩu không đúng!" });
 
         const token = jwt.sign({ email: user.email, id: user._id }, SECRET_KEY, { expiresIn: "1h" });
         res.status(200).json({ result: user, token });
