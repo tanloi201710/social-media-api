@@ -2,6 +2,7 @@ import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import Google from '../models/Google.js'
 
 dotenv.config();
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -41,4 +42,17 @@ export const login = async (req,res) => {
     } catch (error) {
         res.status(500).json(error);
     }
+};
+
+export const GgAccount = async (req,res) => {
+    const { email, name, imageUrl, googleId } = req.body;
+
+    const existingUser = await Google.findOne({ email });
+
+    if(existingUser) {
+        return res.status(200).json(existingUser);
+    };
+
+    const user = await Google.create({ _id: googleId, email, name, profilePicture: imageUrl });
+    res.status(200).json(user);
 };
