@@ -15,6 +15,13 @@ const GoogleSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    gender: {
+        type: String,
+        default: 'male'
+    },
+    job: {
+        type: String
+    },
     profilePicture: {
         type: String,
         default: '',
@@ -47,6 +54,9 @@ const GoogleSchema = mongoose.Schema({
         type: Number,
         enum: [1,2,3],
     },
+    birthday: {
+        type: String,
+    }
 },
     {timestamps: true}
 );
