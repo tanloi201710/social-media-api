@@ -1,6 +1,11 @@
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import Google from '../models/Google.js';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
+const SECRET_KEY = process.env.SECRET_KEY;
 
 export const updateUser = async (req,res) => {
     if(req.userId === req.params.id || req.body.isAdmin){
@@ -13,10 +18,24 @@ export const updateUser = async (req,res) => {
             }
         }
         try {
-            const user = await User.findByIdAndUpdate(req.params.id, {
-                $set: req.body,
-            });
-            res.status(200).json(user);
+            const googleUser = await Google.findById(req.params.id);
+            if(!googleUser) {
+                const updatedUser = await User.findByIdAndUpdate(
+                    req.params.id, 
+                    { $set: req.body },
+                    { new: true }
+                );
+                const token = jwt.sign({ email: updatedUser.email, id: updatedUser._id }, SECRET_KEY, { expiresIn: "1h" });
+                res.status(200).json({ result: updatedUser, token });
+            } else {
+                const updatedUser = await Google.findByIdAndUpdate(
+                    req.params.id, 
+                    { $set: req.body },
+                    { new: true }
+                );
+                const token = jwt.sign({ email: updatedUser.email, id: updatedUser._id }, SECRET_KEY, { expiresIn: "1h" });
+                res.status(200).json({ result: updatedUser, token });
+            }
         } catch (error) {
             return res.status(500).json(error);
         }
@@ -25,36 +44,6 @@ export const updateUser = async (req,res) => {
     }
 };
 
-export const updateGoogle = async (req,res) => {
-    if(req.userId === req.params.id || req.body.isAdmin){
-        if(req.body?.password) {
-            try {
-                const salt = await bcrypt.genSalt(10);
-                req.body.password = await bcrypt.hash(req.body.password, salt);
-            } catch (error) {
-                return res.status(500).json(error);
-            }
-        }
-        try {
-            const userType = await User.findById(req.params.id);
-            if(userType) {
-                const user = await User.findByIdAndUpdate(req.params.id, {
-                    $set: req.body,
-                });
-                res.status(200).json(user);
-            } else {
-                const user = await Google.findByIdAndUpdate(req.params.id, {
-                    $set: req.body,
-                });
-                res.status(200).json(user);
-            }
-        } catch (error) {
-            return res.status(500).json(error);
-        }
-    } else {
-        return res.status(403).json("You can update only your account!");
-    }
-};
 
 export const deleteUser = async (req,res) => {
     if(req.userId === req.params.id || req.body.isAdmin){
