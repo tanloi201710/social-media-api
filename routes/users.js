@@ -6,8 +6,6 @@ const router = express.Router();
 
 //Update user
 router.put("/:id", auth, updateUser);
-//Update google
-router.put("/:id/google", auth, updateGoogle);
 //Delete user
 router.delete("/:id", auth,deleteUser);
 //Get a user
