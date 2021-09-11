@@ -26,6 +26,10 @@ const GoogleSchema = mongoose.Schema({
         type: String,
         default: '',
     },
+    profilePictureName: {
+        type: String,
+        default: '',
+    },
     coverPicture: {
         type: String,
         default: '',
