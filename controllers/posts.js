@@ -31,8 +31,7 @@ export const updatePost = async (req,res) => {
 
 export const updateComments = async(req,res) => {
     try {
-        const post = await Post.findById(req.params.id);
-        const updatedPost = await post.updateOne({ $set: { comment: req.body } });
+        const updatedPost = await Post.findByIdAndUpdate(req.params.id, { $set: { comment: req.body } });
         res.status(200).json(updatedPost);
     } catch (error) {
         res.status(500).json(error);
