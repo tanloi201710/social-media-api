@@ -33,7 +33,7 @@ export const updateComments = async(req,res) => {
     try {
         const updatedPost = await Post.findByIdAndUpdate(
             req.params.id, 
-            { $set: { comments: [...comments, req.body] } }, 
+            { $set: { comments: req.body } }, 
             { new: true }
         );
         res.status(200).json(updatedPost);
