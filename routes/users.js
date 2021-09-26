@@ -1,5 +1,5 @@
 import express from 'express';
-import { updateUser, deleteUser, getUser, follow, unfollow } from '../controllers/users.js';
+import { updateUser, deleteUser, getUser, follow, unfollow, getRecommentFriends } from '../controllers/users.js';
 import auth from '../middleware/auth.js';
 
 const router = express.Router();
@@ -9,7 +9,11 @@ router.put('/:id', auth, updateUser);
 //Delete user
 router.delete('/:id', auth,deleteUser);
 //Get a user
-router.get('/:id',getUser);
+router.get('/:id/one',getUser);
+//Get friends
+// router.get('/friends/:id', getFriends);
+//Get recommentFriends
+router.get('/:id/recomments', getRecommentFriends);
 //Follow a user
 router.put('/:id/follow', auth, follow);
 //Unfollow a user

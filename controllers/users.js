@@ -7,6 +7,20 @@ import dotenv from 'dotenv';
 dotenv.config();
 const SECRET_KEY = process.env.SECRET_KEY;
 
+const getUserOfAll = async (userId) => {
+    try {
+        const googleUser = await Google.findById(userId)
+        if(googleUser) {
+            return googleUser;
+        } else {
+            const user = await User.findById(userId);
+            return user;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const updateUser = async (req,res) => {
     if(req.userId === req.params.id || req.body.isAdmin){
         if(req.body?.password) {
@@ -60,20 +74,37 @@ export const deleteUser = async (req,res) => {
 
 export const getUser = async (req,res) => {
     try {
-        const user = await User.findById(req.params.id);
-        // filtering some value unnecessary
-        const { password, updatedAt, ...other } = user._doc;
-        res.status(200).json(other);
+        const googleUser = await Google.findById(req.params.id);
+        if(googleUser) {
+            const { password, updatedAt, ...other } = googleUser._doc;
+            res.status(200).json(other);
+        } else {
+            const user = await User.findById(req.params.id);
+            // filtering some value unnecessary
+            const { password, updatedAt, ...other } = user._doc;
+            res.status(200).json(other);
+        }
     } catch (error) {
         return res.status(500).json(error);
     }
 };
 
+export const getRecommentFriends = async (req,res) => {
+    try {
+        const googleUser = await Google.find();
+        const defaultUser = await User.find();
+        const recommentList = googleUser.concat(...defaultUser).filter((user) => user._id != req.params.id);
+        res.status(200).json(recommentList);
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
+
 export const follow = async (req,res) => {
     if(req.userId !== req.params.id){
         try {
-            const user = await User.findById(req.params.id);
-            const currentUser = await User.findById(req.userId);
+            const user = await getUserOfAll(req.params.id);
+            const currentUser = await getUserOfAll(req.userId);
 
             if(!user.followers.includes(req.userId)){
                 await user.updateOne({ $push: { followers: req.userId } });
@@ -93,8 +124,8 @@ export const follow = async (req,res) => {
 export const unfollow = async (req,res) => {
     if(req.userId !== req.params.id){
         try {
-            const user = await User.findById(req.params.id);
-            const currentUser = await User.findById(req.userId);
+            const user = await getUserOfAll(req.params.id);
+            const currentUser = await getUserOfAll(req.userId);
 
             if(user.followers.includes(req.userId)){
                 await user.updateOne({ $pull: { followers: req.userId } });

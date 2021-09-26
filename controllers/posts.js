@@ -1,5 +1,7 @@
 
 
+import mongoose from "mongoose";
+import Google from "../models/Google.js";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
 
@@ -80,17 +82,46 @@ export const getPost = async (req,res) => {
     }
 };
 
+export const getPosts = async(req,res) => {
+    try {
+        const userPosts = await Post.find({ userId: req.params.id}).sort({ createdAt: -1 });
+        res.status(200).json(userPosts);
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
+
+const getCurrentUser = async (userId) => {
+    try {
+        const googleUser = await Google.findById(userId)
+        if(googleUser) {
+            return googleUser;
+        } else {
+            const user = await User.findById(userId);
+            return user;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const timeline = async (req,res) => {
     try {
-        // const currentUser = await User.findById(req.userId);
-        const userPosts = await Post.find({ userId: req.userId }).sort( { createdAt: -1 } );
-        // const friendPosts = await Promise.all(
-        //     currentUser.followings.map((friendId) => {
-        //         return Post.find({ userId: friendId });
-        //     })
-        // );
-        return res.status(200).json(userPosts);  //.concat(...friendPosts)
+        const currentUser = await getCurrentUser(req.userId);
+        const userPosts = await Post.find({ userId: req.userId });
+        if(currentUser?.followings.length > 0 ) {
+            const friendPosts = await Promise.all(
+                currentUser.followings.map((friendId) => {
+                    return Post.find({ userId: friendId });
+                })
+            );
+            const timelineList = userPosts.concat(...friendPosts);
+            return res.status(200).json(timelineList);
+        } else {
+            return res.status(200).json(userPosts);
+        }
     } catch (error) {
-        return res.status(500).json(error);
+        res.status(500).json(error);
+        console.log(error);
     }
 };
