@@ -108,7 +108,7 @@ const getCurrentUser = async (userId) => {
 export const timeline = async (req,res) => {
     try {
         const currentUser = await getCurrentUser(req.userId);
-        const userPosts = await Post.find({ userId: req.userId });
+        const userPosts = await Post.find({ userId: req.userId }).sort({ createdAt: -1 });
         if(currentUser?.followings.length > 0 ) {
             const friendPosts = await Promise.all(
                 currentUser.followings.map((friendId) => {
@@ -116,6 +116,8 @@ export const timeline = async (req,res) => {
                 })
             );
             const timelineList = userPosts.concat(...friendPosts);
+            timelineList.sort((a,b) => a.createdAt > b.createdAt ? -1 : 1);
+            console.log(timelineList);
             return res.status(200).json(timelineList);
         } else {
             return res.status(200).json(userPosts);
