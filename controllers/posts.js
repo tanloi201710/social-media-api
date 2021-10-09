@@ -117,7 +117,6 @@ export const timeline = async (req,res) => {
             );
             const timelineList = userPosts.concat(...friendPosts);
             timelineList.sort((a,b) => a.createdAt > b.createdAt ? -1 : 1);
-            console.log(timelineList);
             return res.status(200).json(timelineList);
         } else {
             return res.status(200).json(userPosts);

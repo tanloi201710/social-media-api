@@ -1,4 +1,4 @@
-import Conversation from "../models/Conversation"
+import Conversation from "../models/Conversation.js"
 
 export const createConv = async (req, res) => {
     const newConversation = new Conversation({
@@ -6,8 +6,15 @@ export const createConv = async (req, res) => {
     });
 
     try {
-        const savedConversation = await newConversation.save();
-        res.status(200).json(savedConversation);
+        const conversationFounded = await Conversation.find({
+            members: [req.userId, req.body.receiverId]
+        });
+        if(conversationFounded.length > 0) {
+            res.status(200).json(conversationFounded);
+        } else {
+            const savedConversation = await newConversation.save();
+            res.status(200).json(savedConversation + "saved");
+        }
     } catch (error) {
         res.status(500).json(error);
     }
