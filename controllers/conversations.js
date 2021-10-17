@@ -6,17 +6,21 @@ export const createConv = async (req, res) => {
     });
 
     try {
-        const conversationFounded = await Conversation.find({
-            members: [req.userId, req.body.receiverId]
+        // Check conversation existed
+        const get = await Conversation.find({ members: { $in: [req.userId] } });
+        const existed = get.find((conv) => { 
+            if(conv.members.includes(req.body.receiverId)) 
+                return true; 
+            return false; 
         });
-        if(conversationFounded.length > 0) {
-            res.status(200).json(conversationFounded);
-        } else {
-            const savedConversation = await newConversation.save();
-            res.status(200).json(savedConversation + "saved");
+        if(existed) {
+            return res.status(200).json(existed);
         }
+        const savedConversation = await newConversation.save();
+        res.status(200).json(savedConversation);
     } catch (error) {
         res.status(500).json(error);
+        console.log(error);
     }
 }
 
