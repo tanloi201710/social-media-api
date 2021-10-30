@@ -21,10 +21,15 @@ const PostSchema = new mongoose.Schema({
         type: Array,
         default: [],
     },
-    comments: {
-        type: Array,
-        default: []
-    },
+        /* Commments
+        img: {String}
+        name: {String}
+        message: {String}
+        likes: {Array}
+        replies: {Array},
+        root: {String}
+        createdAt: {timestamps}
+        */
     feeling: {
         type: String,
         default: ''
