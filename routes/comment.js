@@ -1,6 +1,5 @@
 import express from 'express';
-import { addComment, getComments, getReplies, likeComment, updateComment } from '../controllers/Comment.js';
-
+import { addComment, getComments, getReplies, likeComment, updateComment } from '../controllers/comment.js';
 
 import auth from '../middleware/auth.js';
 
