@@ -95,11 +95,12 @@ const getCurrentUser = async (userId) => {
 export const timeline = async (req,res) => {
     try {
         const currentUser = await getCurrentUser(req.userId);
-        const userPosts = await Post.find({ userId: req.userId }).sort({ createdAt: -1 });
+        const userPosts = await Post.find({ userId: req.userId });
         if(currentUser?.followings.length > 0 ) {
             const friendPosts = await Promise.all(
                 currentUser.followings.map((friendId) => {
                     return Post.find({ userId: friendId });
+                    // .sort({ createdAt: -1 })
                 })
             );
             const timelineList = userPosts.concat(...friendPosts);
