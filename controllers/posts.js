@@ -1,6 +1,7 @@
 
 
 import mongoose from "mongoose";
+import Comment from "../models/Comment.js";
 import Google from "../models/Google.js";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
@@ -34,14 +35,19 @@ export const updatePost = async (req,res) => {
 export const deletePost = async (req,res) => {
     try {
         const post = await Post.findById(req.params.id);
+        const comments = await Comment.find({ postId: req.params.id });
         if(post.userId === req.userId){
             await post.deleteOne();
+            await comments.forEach(comment => {
+                comment.deleteOne();
+            });
             return res.status(200).json("The post has been deleted!")
         } else {
             return res.status(403).json("You can delete only your post!");
         }
     } catch (error) {
         return res.status(500).json(error);
+        console.log(error);
     }
 };
 
