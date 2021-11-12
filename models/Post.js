@@ -33,6 +33,9 @@ const PostSchema = new mongoose.Schema({
     feeling: {
         type: String,
         default: ''
+    },
+    tag: {
+        type: Array,
     }
 },
     {timestamps: true}
