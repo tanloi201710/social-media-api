@@ -19,6 +19,9 @@ const NotificationSchema = new mongoose.Schema({
     },
     waitToken: {
         type: String,
+    },
+    link: {
+        type: String,
     }
 },
     {timestamps: true}
