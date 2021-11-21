@@ -12,6 +12,7 @@ import storyRoute from './routes/stories.js';
 import conversationRoute from './routes/conversations.js';
 import messageRoute from './routes/messages.js';
 import commentRoute from './routes/comment.js';
+import notificationRoute from './routes/notifications.js';
 
 
 const app = express();
@@ -44,6 +45,7 @@ app.use('/api/story',storyRoute);
 app.use('/api/conversations', conversationRoute);
 app.use('/api/messages', messageRoute);
 app.use('/api/comments', commentRoute);
+app.use('/api/notifications', notificationRoute);
 
 app.listen(PORT, () => {
     console.log(`Backend is up and running on port ${PORT} !`);

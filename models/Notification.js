@@ -16,6 +16,9 @@ const NotificationSchema = new mongoose.Schema({
     seen: {
         type: Boolean,
         default: false,
+    },
+    waitToken: {
+        type: String,
     }
 },
     {timestamps: true}
