@@ -12,8 +12,7 @@ In the project directory, you can run:
 ### `npm install`
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The Nodejs Server will be running on port 5000.
 
 ## The project includes 3 repository
 Web Front-end [https://github.com/tanloi201710/social-media-web](https://github.com/tanloi201710/social-media-web).
